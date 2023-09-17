@@ -1,16 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
-
-void exibir_vetor(int *v, int len)
-{
-	for (int i = 0; i < len; i++){
-		if (i == 0) printf("[");
-		if (i == len - 1) printf("%d]", v[i]);
-		else printf("%d, ", v[i]);
-	}
-}
 
 int count_lines(FILE *file)
 {
@@ -36,6 +26,20 @@ int main()
     int *info = (int*) malloc(len_info * sizeof(int));
     int len_file_sizes = n_lines - n_tests - 1;
     int *file_sizes = (int*) malloc(len_info * sizeof(int));
+    int count_info = 0, count_file_sizes = 0;
+
+    char line[1024];
+    int a, b;  // Variables to store the integers
+
+    while (fgets(line, sizeof(line), file)) {
+        int matched = sscanf(line, "%d %d", &a, &b);
+        if (matched == 2) {
+            info[count_info++] = a;
+            info[count_info++] = b;
+        } else if (matched == 1) {
+            file_sizes[count_file_sizes++] = a;
+        }
+    }
 
     free(info);
     free(file_sizes);
