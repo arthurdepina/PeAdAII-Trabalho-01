@@ -112,21 +112,21 @@ int main()
     /*                                       A parte de leitura de arquivos já foi realizada,
      *                                        Agora temos os valores armazenados em arrays.                                                  */
 
-    int counter_file_sizes = 0;
+    int counter_file_sizes = 0;                                                     // inicializando o contador para file_sizes como 0
     for (int test = 0; test < n_tests; test++)
     {
         printf("\n");
-        found = false;
-        int size_thumbdrive = info[test * 2] / 2;                    // in GB
-        int len_thumbdrive_array =  info[test * 2 + 1];         // in # of files
-        int *thumbdrive_a = (int*) malloc(len_thumbdrive_array * sizeof(int));
-        int *thumbdrive_b = (int*) malloc(len_thumbdrive_array * sizeof(int));
+        found = false;                                                              // designando found como false
+        int size_thumbdrive = info[test * 2] / 2;                                   // capacidade do pendrive em GB
+        int len_thumbdrive_array =  info[test * 2 + 1];                             // capacidade do pendrive em número de arquivos
+        int *thumbdrive_a = (int*) malloc(len_thumbdrive_array * sizeof(int));      // alocando um vetor para cada pendrive
+        int *thumbdrive_b = (int*) malloc(len_thumbdrive_array * sizeof(int));      // abaixo chamamos a função backup descrita previamente
         backup(thumbdrive_a, thumbdrive_b, size_thumbdrive, file_sizes, len_thumbdrive_array, 0, 0, counter_file_sizes, 0);
-        counter_file_sizes = counter_file_sizes + len_thumbdrive_array;
-        free(thumbdrive_a);
+        counter_file_sizes = counter_file_sizes + len_thumbdrive_array;             // atualizamos esse contador para o início do próximo teste
+        free(thumbdrive_a);                                                         // liberando o espaço alocado para os vetores dos pendrives
         free(thumbdrive_b);
-        if (!found) printf("Impossível gravar todos os arquivos nos pendrives.\n");
-    }
+        if (!found) printf("Impossível gravar todos os arquivos nos pendrives.\n"); // se não foi encontrada maneira apropriada para
+    }                                                                               // preencher o array, imprimos essa mensagem.
     printf("\n");
     return 0;
 }
