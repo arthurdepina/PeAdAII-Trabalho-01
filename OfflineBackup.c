@@ -55,7 +55,10 @@ void backup(int *thumbdrive_a, int *thumbdrive_b, int sizeGB, int *files, int n_
     if (found) return;
 
     if (count_files == n_files) {
+        printf("thumbdrive_a: "); exibir_vetor(thumbdrive_a, count_a); printf("\n");
+        printf("thumbdrive_b: "); exibir_vetor(thumbdrive_b, count_b); printf("\n");
         if (worked(thumbdrive_a, thumbdrive_b, sizeGB, count_a, count_b)){
+            printf("\n WORKED \n");
             printf("thumbdrive_a: "); exibir_vetor(thumbdrive_a, count_a); printf("\n");
             printf("thumbdrive_b: "); exibir_vetor(thumbdrive_b, count_b); printf("\n");
             found = true;
@@ -73,7 +76,8 @@ void backup(int *thumbdrive_a, int *thumbdrive_b, int sizeGB, int *files, int n_
 }
 
 int main()
-{
+{   
+    //                  Dealing with files starts here
     FILE *file = fopen("entrada.txt", "r");
     if (!file) { printf("Erro ao abrir arquivo"); return 1; }
 
@@ -81,19 +85,11 @@ int main()
     int n_tests; fscanf(file, "%d", &n_tests);
     int len_info = n_tests * 2;
     int *info = (int*) malloc(len_info * sizeof(int));
-    /*
-        This array provides info about the thumb drives and about
-        the number of files for each test. q[0] is the combined size
-        of thumbdrive A and B in the first test.
-    */
+    // This array provides info about the thumb drives and about the number of files for each test.
     int len_file_sizes = n_lines - n_tests - 1;
     int *file_sizes = (int*) malloc(len_info * sizeof(int));
-    /*
-        This array provides info about the size of each file for
-        each test. Since the first test 
-    */
+    // This array provides info about the size of each file for each test.
     int count_info = 0, count_file_sizes = 0;
-
     char line[1024];
     int a, b;  // Variables to store the integers
 
@@ -106,31 +102,26 @@ int main()
             file_sizes[count_file_sizes++] = a;
         }
     }
+    //                  Dealing with files ends here
 
-    //int q[] = {64, 4, 128, 6};
-    /*
-        This array provides info about the thumb drives and about
-        the number of files for each test. q[0] is the combined size
-        of thumbdrive A and B in the first test.
-    */
+    printf("Info array: "); exibir_vetor(info, len_info); printf("\n");
+    printf("File sizes: "); exibir_vetor(file_sizes, len_file_sizes); printf("\n");
 
-    //int a[] = {13, 7, 30, 10,
-               // 44, 36, 18, 8, 9, 23};
-    /*
-        This array provides info about the size of each file for
-        each test. Since the first test 
-    */
     int counter_file_sizes = 0;
-
     for (int test = 0; test <= n_tests; test = test + 2)
     {
+        printf("\n\n==== TESTE 0%d ====\n", test / 2 + 1);
         found = false;
         int size_thumbdrive = info[test] / 2;
         int len_thumbdrive_array =  info[test + 1];
         int *thumbdrive_a = (int*) malloc(len_thumbdrive_array * sizeof(int));
-        int *thumbdrive_b = (int*) malloc(len_thumbdrive_array * sizeof(int)); 
-        backup(thumbdrive_a, thumbdrive_b, size_thumbdrive, file_sizes, len_thumbdrive_array, counter_file_sizes, 0, 0);
-        counter_file_sizes = counter_file_sizes + len_thumbdrive_array;                            // a, b, c    <- counters
+        int *thumbdrive_b = (int*) malloc(len_thumbdrive_array * sizeof(int));
+        printf("size_thumbdrive : %d\n", size_thumbdrive);
+        printf("len_thumbdrive_array : %d\n", len_thumbdrive_array);
+        printf("counter_file_sizes: %d\n", counter_file_sizes);
+        printf("files: "); exibir_vetor(file_sizes, len_file_sizes);
+        backup(thumbdrive_a, thumbdrive_b, size_thumbdrive, file_sizes, len_thumbdrive_array, 0, 0, counter_file_sizes);
+        counter_file_sizes = counter_file_sizes + len_thumbdrive_array;
         free(thumbdrive_a);
         free(thumbdrive_b);
         if (!found) printf("Impossible");
