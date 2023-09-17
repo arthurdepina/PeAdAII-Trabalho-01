@@ -25,6 +25,19 @@ void exibir_vetor(int *v, int len)
 		else printf("%d, ", v[i]); }
 }
 
+void exibir_sucesso(int *pendrive_a, int *pendrive_b, int len_a, int len_b, int capacity)
+{
+    printf("%d GB\n", capacity * 2);
+    printf("Pendrive A (%d GB)\n", capacity);
+    for (int i = 0; i < len_a; i++) {
+        printf("%d GB\n", pendrive_a[i]);
+    }
+    printf("Pendrive B (%d GB)\n", capacity);
+    for (int i = 0; i < len_b; i++) {
+        printf("%d GB\n", pendrive_b[i]);
+    }
+}
+
 bool worked(int *thumbdrive_a, int *thumbdrive_b, int size_GB, int n_files_a, int n_files_b) //, int size_files)
 {   /*
      * Verify if the size of the files in A did not exceed the capacity of A (in GB)
@@ -51,8 +64,7 @@ void backup(int *thumbdrive_a, int *thumbdrive_b, int sizeGB, int *files, int n_
 
     if (counter == n_files) {  // the problem is that count_files is getting closer to n_files each test
         if (worked(thumbdrive_a, thumbdrive_b, sizeGB, count_a, count_b)){
-            printf("thumbdrive_a: "); exibir_vetor(thumbdrive_a, count_a); printf("\n");
-            printf("thumbdrive_b: "); exibir_vetor(thumbdrive_b, count_b); printf("\n");
+            exibir_sucesso(thumbdrive_a, thumbdrive_b, count_a, count_b, sizeGB);
             found = true;
             return;
         } else {
@@ -99,7 +111,7 @@ int main()
     int counter_file_sizes = 0;
     for (int test = 0; test < n_tests; test++)
     {
-        printf("\n=== TEST %d ===\n", test);
+        printf("\n");
         found = false;
         int size_thumbdrive = info[test * 2] / 2;                    // in GB
         int len_thumbdrive_array =  info[test * 2 + 1];         // in # of files
@@ -109,7 +121,7 @@ int main()
         counter_file_sizes = counter_file_sizes + len_thumbdrive_array;
         free(thumbdrive_a);
         free(thumbdrive_b);
-        if (!found) printf("Impossible\n");
+        if (!found) printf("Impossível gravar todos os arquivos nos pendrives.\n");
     }
     printf("\n");
     return 0;
