@@ -45,34 +45,26 @@ bool worked(int *thumbdrive_a, int *thumbdrive_b, int size_GB, int n_files_a, in
     else return false;
 }
 
-void backup(int *thumbdrive_a, int *thumbdrive_b, int sizeGB, int *files, int n_files, int count_a, int count_b, int count_files)
-{   /*
-     * thumbdrive_a and thumbdrive_b are arrays in which the files will be stored.
-     * sizeGB is the max size that each thumbdrive can store in GB.
-     * n_files is the lenght of the thumbdrive arrays and also the number of files that
-     * have to be stored in the thumbdrives.
-    */
+void backup(int *thumbdrive_a, int *thumbdrive_b, int sizeGB, int *files, int n_files, int count_a, int count_b, int count_files, int counter)
+{
     if (found) return;
 
-    if (count_files == n_files) {
-        printf("thumbdrive_a: "); exibir_vetor(thumbdrive_a, count_a); printf("\n");
-        printf("thumbdrive_b: "); exibir_vetor(thumbdrive_b, count_b); printf("\n");
+    if (counter == n_files) {  // the problem is that count_files is getting closer to n_files each test
         if (worked(thumbdrive_a, thumbdrive_b, sizeGB, count_a, count_b)){
-            printf("\n WORKED \n");
             printf("thumbdrive_a: "); exibir_vetor(thumbdrive_a, count_a); printf("\n");
             printf("thumbdrive_b: "); exibir_vetor(thumbdrive_b, count_b); printf("\n");
             found = true;
-            printf("\n"); return;
+            return;
         } else {
             return;
         }
     }
 
     thumbdrive_a[count_a] = files[count_files];
-    backup(thumbdrive_a, thumbdrive_b, sizeGB, files, n_files, count_a + 1, count_b, count_files + 1);
+    backup(thumbdrive_a, thumbdrive_b, sizeGB, files, n_files, count_a + 1, count_b, count_files + 1, counter+1);
 
     thumbdrive_b[count_b] = files[count_files];
-    backup(thumbdrive_a, thumbdrive_b, sizeGB, files, n_files, count_a, count_b + 1, count_files + 1);
+    backup(thumbdrive_a, thumbdrive_b, sizeGB, files, n_files, count_a, count_b + 1, count_files + 1, counter+1);
 }
 
 int main()
@@ -104,27 +96,21 @@ int main()
     }
     //                  Dealing with files ends here
 
-    printf("Info array: "); exibir_vetor(info, len_info); printf("\n");
-    printf("File sizes: "); exibir_vetor(file_sizes, len_file_sizes); printf("\n");
-
     int counter_file_sizes = 0;
-    for (int test = 0; test <= n_tests; test = test + 2)
+    for (int test = 0; test < n_tests; test++)
     {
-        printf("\n\n==== TESTE 0%d ====\n", test / 2 + 1);
+        printf("\n=== TEST %d ===\n", test);
         found = false;
-        int size_thumbdrive = info[test] / 2;
-        int len_thumbdrive_array =  info[test + 1];
+        int size_thumbdrive = info[test * 2] / 2;                    // in GB
+        int len_thumbdrive_array =  info[test * 2 + 1];         // in # of files
         int *thumbdrive_a = (int*) malloc(len_thumbdrive_array * sizeof(int));
         int *thumbdrive_b = (int*) malloc(len_thumbdrive_array * sizeof(int));
-        printf("size_thumbdrive : %d\n", size_thumbdrive);
-        printf("len_thumbdrive_array : %d\n", len_thumbdrive_array);
-        printf("counter_file_sizes: %d\n", counter_file_sizes);
-        printf("files: "); exibir_vetor(file_sizes, len_file_sizes);
-        backup(thumbdrive_a, thumbdrive_b, size_thumbdrive, file_sizes, len_thumbdrive_array, 0, 0, counter_file_sizes);
+        backup(thumbdrive_a, thumbdrive_b, size_thumbdrive, file_sizes, len_thumbdrive_array, 0, 0, counter_file_sizes, 0);
         counter_file_sizes = counter_file_sizes + len_thumbdrive_array;
         free(thumbdrive_a);
         free(thumbdrive_b);
-        if (!found) printf("Impossible");
+        if (!found) printf("Impossible\n");
     }
+    printf("\n");
     return 0;
 }
