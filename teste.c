@@ -77,18 +77,21 @@ int main()
         This array provides info about the size of each file for
         each test. Since the first test 
     */
+    int counter_a = 0;
 
     for (int test = 0; test <= n_tests; test = test + 2)
     {
+        found = false;
         int size_thumbdrive = q[test] / 2;
         int len_thumbdrive_array =  q[test + 1];
         // int size_files = get_size(a, len_thumbdrive_array)
         int *thumbdrive_a = (int*) malloc(len_thumbdrive_array * sizeof(int));
-        int *thumbdrive_b = (int*) malloc(len_thumbdrive_array * sizeof(int));
-        backup(thumbdrive_a, thumbdrive_b, size_thumbdrive, a, len_thumbdrive_array, 0, 0, 0);
+        int *thumbdrive_b = (int*) malloc(len_thumbdrive_array * sizeof(int)); 
+        backup(thumbdrive_a, thumbdrive_b, size_thumbdrive, a, len_thumbdrive_array, counter_a, 0, 0);
+        counter_a = counter_a + len_thumbdrive_array;                                     // a, b, c    <- counters
         free(thumbdrive_a);
         free(thumbdrive_b);
-        break;
+        if (!found) printf("Impossible");
     }
     return 0;
 }
