@@ -1,5 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
+bool worked(int *thumbdrive_a, int *thumbdrive_b, int s_a, int s_b, int n_a, int n_b) //, int size_files)
+{
+    /*
+     * Verifica se o tamanho das pastas em A não excedeu a capacidade (em GB) de A.
+     * Verifica se o tamanho das pastas em B não excedeu a capacidade (em GB) de B.
+     *      tamanho_atual_A = thumbdrive_a[0] + thumbdrive_a[1] + ... + thumbdrive_a[n_a] < s_a
+     *      tamanho_atual_B = thumbdrive_b[0] + thumbdrive_b[1] + ... + thumbdrive_b[n_b] < s_b
+    */
+}
 
 int backup(int *thubmdrive_a, int *thumbdrive_b, int size, int *files, int n_files, int count)
 {
@@ -16,21 +27,26 @@ int main()
 {
     int q[] = {64, 4, 128, 6};
     /*
-        This array provides info about the thumb drives and
-        about the number of files for each test.
-        q[0] and q[2] are the sizes for thumbdrive_a and thumbdrive_b combined
+        This array provides info about the thumb drives and about
+        the number of files for each test. q[0] is the combined size
+        of thumbdrive A and B in the first test.
     */
 
     int len_q    = sizeof(q)/sizeof(q[0]);
     int n_tests = len_q / 2;
 
-    int a[] = {13, 7, 30, 10,           // file sizes
-               44, 36, 18, 8, 9, 23};   // file sizes
+    int a[] = {13, 7, 30, 10,
+               44, 36, 18, 8, 9, 23};
+    /*
+        This array provides info about the size of each file for
+        each test. Since the first test 
+    */
 
     for (int test = 0; test <= n_tests; test = test + 2)
     {
         int size_thumbdrive = q[test] / 2;
         int len_thumbdrive_array =  q[test + 1];
+        // int size_files = get_size(a, len_thumbdrive_array)
         int *thumbdrive_a = (int*) malloc(len_thumbdrive_array * sizeof(int));
         int *thumbdrive_b = (int*) malloc(len_thumbdrive_array * sizeof(int));
         // backup(thumbdrive_a, thumbdrive_b, size_thumbdrive, a, len_thumbdrive_array, 0);
