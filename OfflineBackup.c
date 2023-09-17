@@ -2,31 +2,28 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-bool found;
+bool found; /*variável global para indicar se foi encontrada
+              maneira adequada de se preencher os pendrives*/
 
 int count_lines(FILE *file)
 {
+    /*        Conta as linhas do arquivo.
+     * Aloca um char ch, quando esse char igual ao
+     * final do arquivo, a contagem é finalizada. */
     int count = 0;
     char ch;
 
     while ((ch = fgetc(file)) != EOF) {
         if (ch == '\n') count++;  
     }
-
     rewind(file);
     return count;
 }
 
-void exibir_vetor(int *v, int len)
+void exibir_preenchimento(int *pendrive_a, int *pendrive_b, int len_a, int len_b, int capacity)
 {
-	for (int i = 0; i < len; i++)  {
-		if (i == 0) printf("[");
-		if (i == len - 1) printf("%d]", v[i]);
-		else printf("%d, ", v[i]); }
-}
-
-void exibir_sucesso(int *pendrive_a, int *pendrive_b, int len_a, int len_b, int capacity)
-{
+    /*      Exibe como os pendrives foram preenchidos
+     * Faz um loop pelos arquivos de cada pendrive e os exibe. */
     printf("%d GB\n", capacity * 2);
     printf("Pendrive A (%d GB)\n", capacity);
     for (int i = 0; i < len_a; i++) {
@@ -39,12 +36,9 @@ void exibir_sucesso(int *pendrive_a, int *pendrive_b, int len_a, int len_b, int 
 }
 
 bool worked(int *thumbdrive_a, int *thumbdrive_b, int size_GB, int n_files_a, int n_files_b) //, int size_files)
-{   /*
-     * Verify if the size of the files in A did not exceed the capacity of A (in GB)
-     * Verify if the size of the files in B did not exceed the capacity of B (in GB)
-     *      tamanho_atual_A = thumbdrive_a[0] + thumbdrive_a[1] + ... + thumbdrive_a[n_a] < s_a
-     *      tamanho_atual_B = thumbdrive_b[0] + thumbdrive_b[1] + ... + thumbdrive_b[n_b] < s_b
-    */
+{   /*                  Verifica se a distribuição de arquivos atuais funcionou.
+     * Soma o tamanho em GB dos arquivos de cada pendrive e verifica de tamanhos não excedeu a
+     * capacidade de armazenamento do pendrive. Se não excedeu, retorna true, se excedeu, retorna false. */
     int current_size_a = 0, current_size_b = 0;
 
     for (int file = 0; file < n_files_a; file++) {
@@ -60,12 +54,19 @@ bool worked(int *thumbdrive_a, int *thumbdrive_b, int size_GB, int n_files_a, in
 
 void backup(int *thumbdrive_a, int *thumbdrive_b, int sizeGB, int *files, int n_files, int count_a, int count_b, int count_files, int counter)
 {
-    if (found) return;
+    /* Parâmetros: *thumbdrive_a e *thumbdrive_b: ponteiros para os vetores do pendrive_a e pendrive_b
+     *             sizeGB: capacidade em GB de cada pendrive
+     *             *files: ponteiro para o vetor com o tamanho dos arquivos
+     *             n_files: número de arquivos analisados em cada teste
+     *             count_a e count_b: contadores para *thumbdrive_a e *thumbdrive_b
+     *             count_files: contador para *files. indica em qual index de *files os arquivos do teste atual começam
+     *             counter: contador de quantos arquivos foram adicionados aos pendrives*/
+    if (found) return; // Se já foi encontrada uma solução, retorna para sair da função.
 
-    if (counter == n_files) {  // the problem is that count_files is getting closer to n_files each test
-        if (worked(thumbdrive_a, thumbdrive_b, sizeGB, count_a, count_b)){
-            exibir_sucesso(thumbdrive_a, thumbdrive_b, count_a, count_b, sizeGB);
-            found = true;
+    if (counter == n_files) {                                                               // se o número de arquivos adicionados aos pendrive for
+        if (worked(thumbdrive_a, thumbdrive_b, sizeGB, count_a, count_b)){                  // igual ao número de arquivos desse teste, verifica se
+            exibir_preenchimento(thumbdrive_a, thumbdrive_b, count_a, count_b, sizeGB);     //     o preenchimento foi adequado, e se foi adequado,
+            found = true;                                                                   //       found assume o valor true e saímos da recursão
             return;
         } else {
             return;
@@ -81,32 +82,35 @@ void backup(int *thumbdrive_a, int *thumbdrive_b, int sizeGB, int *files, int n_
 
 int main()
 {   
-    //                  Dealing with files starts here
-    FILE *file = fopen("entrada.txt", "r");
-    if (!file) { printf("Erro ao abrir arquivo"); return 1; }
+    FILE *file = fopen("entrada.txt", "r");                                                 // abrindo arquivo
+    if (!file) { printf("Erro ao abrir arquivo"); return 1; }                               // se houver problema encerra o programa
 
-    int n_lines = count_lines(file) + 1;
-    int n_tests; fscanf(file, "%d", &n_tests);
-    int len_info = n_tests * 2;
-    int *info = (int*) malloc(len_info * sizeof(int));
-    // This array provides info about the thumb drives and about the number of files for each test.
-    int len_file_sizes = n_lines - n_tests - 1;
-    int *file_sizes = (int*) malloc(len_info * sizeof(int));
-    // This array provides info about the size of each file for each test.
-    int count_info = 0, count_file_sizes = 0;
-    char line[1024];
-    int a, b;  // Variables to store the integers
-
+    int n_lines = count_lines(file) + 1;                                                    // conta linhas do arquivo
+    int n_tests; fscanf(file, "%d", &n_tests);                                              // pega número de testes
+    int len_info = n_tests * 2;                                                             
+    int *info = (int*) malloc(len_info * sizeof(int));                                      
+    // info: irá receber a capacidade de armazenamento dos pendrives e a quantidade de arquivos de cada teste
+    int len_file_sizes = n_lines - n_tests - 1;                                             
+    int *file_sizes = (int*) malloc(len_info * sizeof(int));                               
+    // file_sizes: irá receber o tamanho em GB de cada arquivo a ser utilizado nos testes
+    int count_info = 0, count_file_sizes = 0;                                               // contadores para info e file_sizes
+    char line[1024];                                                                        // buffer para linhas do arquivo
+    int a, b;                                                                               // variáveis para armazenar temporariamente
+                                                                                            //                   o tamanho dos arquivos
     while (fgets(line, sizeof(line), file)) {
-        int matched = sscanf(line, "%d %d", &a, &b);
-        if (matched == 2) {
-            info[count_info++] = a;
-            info[count_info++] = b;
-        } else if (matched == 1) {
-            file_sizes[count_file_sizes++] = a;
+        /* fgets() lê até sizeof(line) - 1 ou até um \n ou EOF. se
+         * a linha for lida corretamente, retorna um ponteiro para
+         * line. caso contrário retorna NULL encerrando o loop  */
+        int matched = sscanf(line, "%d %d", &a, &b); // tenta ler dois caracteres na linha e assinalar. se conseguir, assinala e retorna 2.
+        if (matched == 2) {                          // se foram assinalados valores em a e b
+            info[count_info++] = a;                  // 'a' é a capacidade dos pendrives em GB e 'b' é a quantidade de arquivos de um teste
+            info[count_info++] = b;                  // esses valores são armazenados no vetor info.
+        } else if (matched == 1) {                   // se apenas um valor foi assinalado, esse valor é o tamanho de um arquivo
+            file_sizes[count_file_sizes++] = a;      // esse valor é armazenado em file_sizes.
         }
     }
-    //                  Dealing with files ends here
+    /*                                       A parte de leitura de arquivos já foi realizada,
+     *                                        Agora temos os valores armazenados em arrays.                                                  */
 
     int counter_file_sizes = 0;
     for (int test = 0; test < n_tests; test++)
