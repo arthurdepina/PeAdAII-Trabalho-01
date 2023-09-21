@@ -91,7 +91,7 @@ int main()
     int *info = (int*) malloc(len_info * sizeof(int));                                      
     // info: irá receber a capacidade de armazenamento dos pendrives e a quantidade de arquivos de cada teste
     int len_file_sizes = n_lines - n_tests - 1;                                             
-    int *file_sizes = (int*) malloc(len_info * sizeof(int));                               
+    int *file_sizes = (int*) malloc(len_file_sizes * sizeof(int));                               
     // file_sizes: irá receber o tamanho em GB de cada arquivo a ser utilizado nos testes
     int count_info = 0, count_file_sizes = 0;                                               // contadores para info e file_sizes
     char line[1024];                                                                        // buffer para linhas do arquivo
