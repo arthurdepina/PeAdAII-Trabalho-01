@@ -1,6 +1,15 @@
+/* 
+                        Arthur de Pina Balduino Leitão - 32207840
+                        João Victor Dallapé Madeira    - 32209592
+                                    Disponível em:
+                    https://github.com/arthurdepina/PeAdAII-Trabalho-01
+    https://replit.com/@arthurdepina/Trabalho-01-Projeto-e-Analise-de-Algoritmos-II#main.c
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+
 
 bool found; /*variável global para indicar se foi encontrada
               maneira adequada de se preencher os pendrives*/
@@ -109,6 +118,7 @@ int main()
             file_sizes[count_file_sizes++] = a;      // esse valor é armazenado em file_sizes.
         }
     }
+
     /*                                       A parte de leitura de arquivos já foi realizada,
      *                                        Agora temos os valores armazenados em arrays.                                                  */
 
